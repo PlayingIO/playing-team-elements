@@ -1,9 +1,9 @@
 <!--
-An element for displaying team metric data.
+An element for displaying team data.
 
 Example:
 
-    <playing-view-team metric=[[metric]] new></playing-view-team>
+    <playing-view-team team=[[team]] new></playing-view-team>
 
 @group Playing Elements
 @element playing-view-team
@@ -39,29 +39,29 @@ Example:
       }
     </style>
     
-    <div role="widget" hidden$="[[!metric.description]]">
-      <label>[[i18n('play.metric.field.description')]]</label>
-      <div name="description" class="multiline">[[metric.description]]</div>
+    <div role="widget" hidden$="[[!team.description]]">
+      <label>[[i18n('play.team.field.description')]]</label>
+      <div name="description" class="multiline">[[team.description]]</div>
     </div>
 
-    <div role="widget" hidden$="[[!metric.image]]">
-      <label>[[i18n('play.metric.field.image')]]</label>
-      <img id="image" src$="[[metric.image.url]]">
+    <div role="widget" hidden$="[[!team.image]]">
+      <label>[[i18n('play.team.field.image')]]</label>
+      <img id="image" src$="[[team.image.url]]">
     </div>
 
     <div role="widget">
-      <label>[[i18n('play.metric.field.constraints')]]</label>
+      <label>[[i18n('play.team.field.constraints')]]</label>
       <div class="table">
         <div class="table-header">
-          <div class="flex">[[i18n('play.metric.team.constraints.minimum')]]</div>
-          <div class="flex">[[i18n('play.metric.team.constraints.maximum')]]</div>
-          <div class="flex">[[i18n('play.metric.team.constraints.default')]]</div>
+          <div class="flex">[[i18n('play.constraints.minimum')]]</div>
+          <div class="flex">[[i18n('play.constraints.maximum')]]</div>
+          <div class="flex">[[i18n('play.constraints.default')]]</div>
         </div>
         <div class="table-rows">
           <div class="table-row">
-            <div class="flex">[[metric.constraints.minimum]]</div>
-            <div class="flex">[[metric.constraints.maximum]]</div>
-            <div class="flex">[[metric.constraints.default]]</div>
+            <div class="flex">[[team.constraints.minimum]]</div>
+            <div class="flex">[[team.constraints.maximum]]</div>
+            <div class="flex">[[team.constraints.default]]</div>
           </div>
         </div>
       </div>
@@ -77,9 +77,9 @@ Example:
       static get properties() {
         return {
           /**
-           * The metric object to be displayed.
+           * The team object to be displayed.
            */
-          metric: {
+          team: {
             type: Object,
             value: {}
           }
