@@ -1,0 +1,92 @@
+<!--
+An element for displaying team metric data.
+
+Example:
+
+    <playing-view-team metric=[[metric]] new></playing-view-team>
+
+@group Playing Elements
+@element playing-view-team
+-->
+<dom-module id="playing-view-team">
+  <template>
+    <style include="mostly-styles">
+      :host {
+        display: block;
+      }
+
+      *[role=widget] {
+        margin-bottom: 16px;
+      }
+
+      label {
+        @apply --mostly-label;
+      }
+
+      div.multiline {
+        white-space: pre-line;
+      }
+
+      div {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        word-break: break-word;
+        -webkit-hyphens: auto;
+        -moz-hyphens: auto;
+        -ms-hyphens: auto;
+        -o-hyphens: auto;
+        hyphens: auto;
+      }
+    </style>
+    
+    <div role="widget" hidden$="[[!metric.description]]">
+      <label>[[i18n('play.metric.field.description')]]</label>
+      <div name="description" class="multiline">[[metric.description]]</div>
+    </div>
+
+    <div role="widget" hidden$="[[!metric.image]]">
+      <label>[[i18n('play.metric.field.image')]]</label>
+      <img id="image" src$="[[metric.image.url]]">
+    </div>
+
+    <div role="widget">
+      <label>[[i18n('play.metric.field.constraints')]]</label>
+      <div class="table">
+        <div class="table-header">
+          <div class="flex">[[i18n('play.metric.team.constraints.minimum')]]</div>
+          <div class="flex">[[i18n('play.metric.team.constraints.maximum')]]</div>
+          <div class="flex">[[i18n('play.metric.team.constraints.default')]]</div>
+        </div>
+        <div class="table-rows">
+          <div class="table-row">
+            <div class="flex">[[metric.constraints.minimum]]</div>
+            <div class="flex">[[metric.constraints.maximum]]</div>
+            <div class="flex">[[metric.constraints.default]]</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </template>
+
+  <script>
+    class PlayingViewTeam extends Polymer.mixinBehaviors([Mostly.I18nBehavior], Polymer.Element) {
+
+      static get is() { return 'playing-view-team' };
+
+      static get properties() {
+        return {
+          /**
+           * The metric object to be displayed.
+           */
+          metric: {
+            type: Object,
+            value: {}
+          }
+        }
+      }
+    }
+
+    customElements.define(PlayingViewTeam.is, PlayingViewTeam);
+  </script>
+</dom-module>

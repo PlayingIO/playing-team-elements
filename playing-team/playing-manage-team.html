@@ -1,0 +1,278 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../iron-icon/iron-icon.html">
+<link rel="import" href="../../paper-input/paper-input.html">
+<link rel="import" href="../../paper-button/paper-button.html">
+<link rel="import" href="../../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../paper-toast/paper-toast.html">
+
+<link rel="import" href="../../mostly-elements/behaviors/mostly-filters-behavior.html">
+<link rel="import" href="../../mostly-elements/behaviors/mostly-i18n-behavior.html">
+<link rel="import" href="../../mostly-elements/mostly-common/mostly-connection.html">
+<link rel="import" href="../../mostly-elements/mostly-common/mostly-resource.html">
+<link rel="import" href="../../mostly-elements/widgets/mostly-dialog.html">
+
+<!--
+An element for managing a team.
+
+Example:
+
+    <playing-manage-team team="Administrator"></playing-manage-team>
+
+@group Playing Elements
+@element playing-manage-team
+-->
+
+<dom-module id="playing-manage-team">
+  <template>
+    <style include="mostly-styles">
+      :host {
+        display: block;
+      }
+
+      label {
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+
+      .header {
+        @apply --layout-start;
+      }
+
+      .backButton {
+        color: var(--mostly-button-primary, #00adff);
+      }
+
+      .name {
+        margin: 10px 0 5px 5px;
+      }
+
+      .subname {
+        font-weight: normal;
+        margin: 0 0 0 5px;
+      }
+
+      .icon {
+        margin-top: 10px;
+      }
+
+      .teams {
+        @apply --layout-horizontal;
+        @apply --layout-flex;
+        @apply --layout-center;
+        @apply --layout-end-justified;
+      }
+
+      .teams paper-button {
+        margin-left: 1em;
+      }
+
+      paper-button iron-icon {
+        width: 1.3rem;
+        margin-right: .5rem;
+      }
+
+      .remove {
+        color: red;
+        cursor: pointer;
+        font-size: .8rem;
+        margin-left: 10px;
+        text-decoration: underline;
+      }
+
+      playing-view-team {
+        margin: 2em;
+      }
+
+      paper-dialog {
+        min-width: 400px;
+        padding-top: 24px;
+      }
+
+      #errors {
+        color: red;
+        margin-top: 20px;
+      }
+
+      .buttons {
+        @apply --buttons-bar;
+        margin-top: 2em;
+      }
+
+      .confirm {
+        padding: 2em;
+        font-size: 1.1rem;
+      }
+
+      paper-card {
+        @apply --mostly-card;
+      }
+    </style>
+
+    <mostly-resource id="request" path="teams" schemas='*'></mostly-resource>
+    <mostly-resource id="editRequest" path="teams" schemas='*'></mostly-resource>
+
+    <paper-toast id="toast"></paper-toast>
+
+    <paper-card>
+      <div class="header horizontal layout">
+        <paper-icon-button class="backButton" icon="icons:arrow-back" on-tap="_goHome"></paper-icon-button>
+        <iron-icon icon="playing:team" class="icon"></iron-icon>
+        <div class="layout vertical">
+          <h3 class="name">[[team.name]]</h3>
+          <h4 class="subname">[[i18n('play.team.heading')]]</h4>
+        </div>
+
+        <div class="teams">
+
+          <!-- delete -->
+          <paper-button noink id="deleteTeamButton" class="horizontal layout center" on-tap="_toggleDeleteTeam">
+            <iron-icon noink icon="mostly:delete"></iron-icon> [[i18n('command.delete')]]
+          </paper-button>
+
+          <!-- edit -->
+          <paper-button noink id="editTeamButton" class="primary horizontal layout center" on-tap="_toggleEditTeam">
+            <iron-icon icon="mostly:edit"></iron-icon> [[i18n('play.team.editTeam.button')]]
+          </paper-button>
+
+        </div>
+      </div>
+
+      <iron-pages selected="[[page]]" attr-for-selected="name">
+        <section name="viewer">
+          <playing-view-team id="teamViewer" team="[[team]]"></playing-view-team>
+        </section>
+        <section name="editor">
+          <h2>[[i18n('play.team.editTeam.heading')]]</h2>
+          <iron-form id="editTeamForm">
+            <form class="vertical layout">
+              <playing-edit-team id="teamEditor" team="[[team]]"></playing-edit-team>
+            </form>
+          </iron-form>
+          <div class="horizontal end-justified layout">
+            <div class="flex start-justified">
+              <paper-button noink on-tap="_cancelEditTeam">[[i18n('command.cancel')]]</paper-button>
+            </div>
+            <paper-button noink class="primary" on-tap="_submitEditTeam">
+              [[i18n('command.save.changes')]]
+            </paper-button>
+          </div>
+        </section>
+    </paper-card>
+
+    <mostly-dialog id="deleteTeamDialog" with-backdrop>
+      <h2>[[i18n('play.team.delete.confirm')]]</h2>
+      <div class="buttons horizontal end-justified layout">
+        <div class="flex start-justified">
+          <paper-button noink dialog-dismiss>[[i18n('label.no')]]</paper-button>
+        </div>
+        <paper-button noink class="primary" on-tap="_deleteTeam">[[i18n('label.yes')]]</paper-button>
+      </div>
+    </mostly-dialog>
+
+  </template>
+
+  <script>
+    class PlayingManageTeam extends Polymer.mixinBehaviors(
+        [Mostly.I18nBehavior, Mostly.FiltersBehavior], Polymer.Element) {
+
+      static get is() { return 'playing-manage-team' };
+
+      static get properties() {
+        return {
+          /**
+           * The team manage page to be displayed.
+           */
+          page: {
+            type: String,
+            value: 'viewer',
+            notify: true
+          },
+
+          team: {
+            type: Object,
+            observer: '_fetch'
+          },
+
+          empty: Boolean,
+
+          readonly: {
+            type: Boolean,
+            value: false,
+            reflectToAttribute: true
+          },
+
+          errors: {
+            type: String,
+            reflectToAttribute: true
+          }
+        }
+      }
+
+      ready() {
+        super.ready();
+        this.$.editTeamForm.addEventListener('iron-form-presubmit', (event) => {
+          event.preventDefault();
+          this._saveTeam();
+        });
+      }
+
+      _fetch() {
+        if (typeof this.team === 'string') {
+          this.$.request.get().then((response) => {
+            this.team = response.data;
+          });
+        }
+      }
+
+      _toggleDialog(e) {
+        this.$.dialog.toggle();
+      }
+
+      _toggleEditTeam() {
+        this.page = (this.page === 'viewer')? 'editor' : 'viewer';
+      }
+
+      _cancelEditTeam() {
+        this.page = 'viewer';
+      }
+
+      _submitEditTeam() {
+        this.$.editTeamForm.submit();
+      }
+
+      _saveTeam() {
+        this.page = 'viewer';
+        var editedTeam = JSON.parse(JSON.stringify(this.team));
+        this.$.editRequest.data = editedTeam;
+        this.$.editRequest.patch().then((response) => {
+          this.team = response.data;
+          this._toast(this.i18n('play.team.updated'));
+        });
+      }
+
+      _toggleDeleteTeam() {
+        this.$.deleteTeamDialog.toggle();
+      }
+
+      _deleteTeam() {
+        this.$.deleteTeamDialog.toggle();
+        this.$.editRequest.remove().then((response) => {
+          this.fire('playing-team-deleted', this.team);
+          this._goHome();
+        });
+      }
+
+      _goHome() {
+        this.page = 'viewer';
+        this.fire('goHome');
+      }
+
+      _toast(msg) {
+        this.$.toast.text = msg;
+        this.$.toast.open();
+      }
+    }
+
+    customElements.define(PlayingManageTeam.is, PlayingManageTeam);
+  </script>
+</dom-module>

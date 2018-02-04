@@ -1,0 +1,214 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../iron-form/iron-form.html">
+<link rel="import" href="../../paper-input/paper-input.html">
+<link rel="import" href="../../paper-button/paper-button.html">
+<link rel="import" href="../../paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../paper-toggle-button/paper-toggle-button.html">
+
+<link rel="import" href="../../mostly-elements/behaviors/mostly-i18n-behavior.html">
+<link rel="import" href="../../mostly-elements/mostly-common/mostly-connection.html">
+<link rel="import" href="../../mostly-elements/mostly-common/mostly-resource.html">
+
+<link rel="import" href="playing-edit-team.html">
+
+<!--
+`playing-create-team`
+@group Playing Elements
+@element playing-create-team
+-->
+<dom-module id="playing-create-team">
+  <template>
+    <style include="mostly-styles">
+      :host {
+        display: block;
+      }
+
+      form {
+        margin: 24px 0 0;
+      }
+
+      .backButton {
+        color: var(--mostly-button-primary, #00adff);
+      }
+
+      .header > iron-icon {
+        padding: 8px;
+      }
+
+      .fade-6 {
+        opacity: 0.6;
+      }
+
+      #another {
+        margin: 2em 0;
+      }
+
+      paper-radio-group {
+        outline: none;
+      }
+
+      paper-radio-button {
+        margin-right: 10px;
+        padding: 0;
+      }
+
+      .label-password {
+        margin-top: 16px;
+      }
+
+      #errors {
+        color: red;
+        margin: 1em 0;
+      }
+
+      .header h3  {
+        margin-bottom: 0;
+      }
+
+      h3 iron-icon {
+        width: 1.3em;
+        margin-right: .2rem;
+      }
+
+      .form-buttons {
+        padding: 1em;
+        margin: 16px -1.2rem 0;
+      }
+    </style>
+
+    <mostly-resource id="request" path="teams"></mostly-resource>
+
+    <div class="header horizontal layout center">
+      <paper-icon-button class="backButton" icon="icons:arrow-back" on-tap="_goHome"></paper-icon-button>
+      <h3><iron-icon icon="playing:team"></iron-icon>[[i18n('play.team.heading')]]</h3>
+    </div>
+
+    <iron-form id="form">
+      <form class="vertical layout">
+        <div class="fade-6">
+          <p>[[i18n('play.team.guide')]]</p>
+        </div>
+      
+        <paper-input name="name" label="[[i18n('play.team.field.name')]]"
+                value="{{team.name}}" minlength="3" maxlength="20"
+                auto-validate required always-float-label>
+        </paper-input>
+
+        <playing-edit-team id="propertyEditor" team="{{team}}" new></playing-edit-team>
+
+        <div class="form-buttons">
+          <paper-button noink id="cancelButton" on-tap="_cancel">[[i18n('command.cancel')]]</paper-button>
+          <paper-button noink id="createButton" class="primary" on-tap="_submit">[[i18n('command.create')]]</paper-button>
+          <paper-button noink id="createAnotherButton" class="primary" on-tap="_submitAnother">
+            [[i18n('play.team.new.another')]]
+          </paper-button>
+        </div>
+
+        <span id="errors" hidden$="[[!_hasErrors(errors)]]">[[errors]]</span>
+
+      </form>
+    </iron-form>
+
+  </template>
+
+  <script>
+    class PlayingCreateTeam extends Polymer.mixinBehaviors([Mostly.I18nBehavior], Polymer.Element) {
+
+      static get is() { return 'playing-create-team' };
+
+      static get properties() {
+        return {
+          team: {
+            type: Object,
+            value: () => { return { constraints: {} } }
+          },
+
+          errors: {
+            type: String,
+            value: ''
+          },
+
+          /**
+           * If true, allows to create a new team immediately after the current one is created
+           */
+          _createAnother: {
+            type: Boolean,
+            value: false
+          },
+
+          _currentUser: {
+            type: Object
+          }
+        }
+      }
+
+      ready() {
+        super.ready();
+        this.$.form.addEventListener('iron-form-presubmit', (event) => {
+          event.preventDefault();
+          this._create();
+        });
+      }
+
+      _goHome() {
+        this.fire('goHome');
+      }
+
+      /**
+       * Submits the form with `_createAnother` option set to true.
+       */
+      _submitAnother() {
+        this._createAnother = true;
+        this.$.form.submit();
+      }
+
+      /**
+       * Submits the form.
+       */
+      _submit() {
+        this._createAnother = false;
+        this.$.form.submit();
+      }
+
+      /**
+       * Creates a new team if the form was successfully submitted.
+       */
+      _create() {
+        this._doCreate(this.team).then((team) => {
+          this._resetFields();
+          if (!this._createAnother) {
+            this._goHome();
+          }
+        }).catch((error) => {
+          this.errors = error.message;
+        });
+      }
+
+      _doCreate(team) {
+        this.$.request.data = team;
+        return this.$.request.post().then((response) => {
+          this.fire('playing-team-created', response.data);
+        })
+      }
+
+      _cancel() {
+        this._resetFields();
+        this._goHome();
+      }
+
+      _resetFields() {
+        this.team = {};
+        this.errors = '';
+      }
+
+      _hasErrors() {
+        return this.errors !== '';
+      }
+    }
+
+    customElements.define(PlayingCreateTeam.is, PlayingCreateTeam);
+  </script>
+</dom-module>

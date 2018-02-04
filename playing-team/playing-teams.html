@@ -1,0 +1,200 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../iron-pages/iron-pages.html">
+<link rel="import" href="../../iron-form/iron-form.html">
+
+<link rel="import" href="../../paper-card/paper-card.html">
+<link rel="import" href="../../paper-button/paper-button.html">
+<link rel="import" href="../../paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../paper-item/paper-icon-item.html">
+<link rel="import" href="../../paper-toast/paper-toast.html">
+
+<link rel="import" href="../../iron-input/iron-input.html">
+<link rel="import" href="../../iron-icon/iron-icon.html">
+<link rel="import" href="../../iron-icons/iron-icons.html">
+<link rel="import" href="../../iron-icons/social-icons.html">
+
+<link rel="import" href="../../mostly-elements/mostly-common/mostly-resource.html">
+<link rel="import" href="../../mostly-elements/mostly-common/mostly-connection.html">
+<link rel="import" href="../../mostly-elements/behaviors/mostly-i18n-behavior.html">
+<link rel="import" href="../../mostly-elements/behaviors/mostly-filters-behavior.html">
+
+<link rel="import" href="../playing-team/playing-create-team.html">
+<link rel="import" href="../playing-team/playing-manage-team.html">
+<link rel="import" href="../playing-team/playing-team-search.html">
+
+<!--
+An element for managing teams in Playing game services.
+@group Playing UI Elements
+@element playing-teams
+-->
+<dom-module id="playing-teams">
+  <template>
+    <style include="mostly-styles">
+      :host {
+        display: block;
+        position: relative;
+        @apply --layout-flex;
+      }
+
+      .main {
+        position: relative;
+      }
+
+      #createButton {
+        position: absolute;
+        right: 0;
+        padding: 0;
+        top: 15px;
+        width: 130px;
+        height: 48px;
+        margin-bottom: 16px;
+      }
+
+      paper-button iron-icon {
+        padding-right: 8px;
+      }
+
+      paper-card {
+        @apply --mostly-card;
+      }
+    </style>
+
+    <mostly-connection user="{{_currentUser}}"></mostly-connection>
+
+    <mostly-page>
+      <div slot="header">
+        <span class="flex">[[i18n('play.team.heading')]]</span>
+      </div>
+      <div class="main">
+        <paper-toast id="toast"></paper-toast>
+        <iron-pages selected="[[page]]" attr-for-selected="name">
+          <section name="search">
+            <div class="horizontal layout center">
+              <template is="dom-if" if="[[_canCreateTeam(readonly, _currentUser)]]">
+                <div class="flex">
+                  <paper-button noink id="createButton" class="primary horizontal layout center" on-tap="_createTeam">
+                    <iron-icon icon="mostly:add"></iron-icon> [[i18n('play.team.new')]]
+                  </paper-button>
+                </div>
+              </template>
+            </div>
+            <playing-team-search></playing-team-search>
+          </section>
+
+          <section name="create-team">
+            <paper-card>
+              <playing-create-team id="teamCreator"
+                    readonly$="[[readonly]]"></playing-create-team>
+            </paper-card>
+          </section>
+
+          <section name="manage-team">
+            <playing-manage-team id="teamManager"
+                    team="[[selectedTeam.id]]"
+                    readonly$="[[readonly]]"></playing-manage-team>
+          </section>
+        </iron-pages>
+      </div>
+    </mostly-page>
+  </template>
+
+  <script>
+    class PlayingTeams extends Polymer.mixinBehaviors(
+        [Mostly.I18nBehavior, Mostly.FiltersBehavior, Mostly.RoutingBehavior], Polymer.Element) {
+
+      static get is() { return 'playing-teams' };
+
+      static get properties() {
+        return {
+          /**
+           * The team manage page to be displayed.
+           */
+          page: {
+            type: String,
+            value: 'search',
+            notify: true
+          },
+
+          /**
+           * True if currently in read only mode.
+           */
+          readonly: {
+            type: Boolean,
+            value: false,
+            reflectToAttribute: true
+          },
+
+          _currentUser: {
+            type: Object
+          }
+        }
+      }
+
+      ready() {
+        super.ready();
+        this.addEventListener('goHome', this._goSearch);
+        this.addEventListener('playing-team-created', this._toast);
+        this.addEventListener('manageTeam', this._manageTeam);
+      }
+
+      /**
+       * Go to the 'search' page.
+       */
+      _goSearch() {
+        this.selectedTeam = null;
+        this.$$('playing-team-search')._searchTermChanged();
+        this.entity = {};
+        this.page = 'search';
+        this.navigateTo('play', 'team-management');
+      }
+
+      /**
+       * Got to the 'create-team' page.
+       */
+      _createTeam(e) {
+        this.page = 'create-team';
+      }
+
+      _manageTeam(e) {
+        this.selectedTeam = null;
+        this.selectedTeam = e.detail.team;
+        this.page = 'manage-team';
+      }
+
+      _hasAdministrationPermissions(user) {
+        return user && (user.isAdministrator || this.isMember(user, 'powerusers'));
+      }
+
+      _canCreateTeam(readonly, currentUser) {
+        return !readonly && this._hasAdministrationPermissions(currentUser);
+      }
+
+      /**
+       * Displays a message.
+       */
+      _toast(event) {
+        var msg;
+        switch (event.type) {
+          case 'playing-team-created':
+            msg = 'Team ' + event.detail.team + ' created';
+            break;
+        }
+        if (msg) {
+          this.$.toast.text = msg;
+          this.$.toast.open();
+        }
+      }
+
+      /**
+       * Determines whether a custom element is registered
+       */
+      _isRegistered(tag) {
+        return document.createElement(tag) instanceof Polymer.Element;
+      }
+    }
+
+    customElements.define(PlayingTeams.is, PlayingTeams);
+  </script>
+</dom-module>

@@ -1,0 +1,106 @@
+<!--
+An element for creating and editing team team data.
+
+Example:
+
+    <playing-edit-team team=[[team]] new></playing-edit-team>
+
+@group Playing Elements
+@element playing-edit-team
+-->
+<dom-module id="playing-edit-team">
+  <template>
+    <style include="mostly-styles">
+      :host {
+        display: block;
+        width: 100%;
+      }
+    </style>
+
+    <div class="layout vertical">
+      <paper-input name="description" label="[[i18n('play.team.field.description')]]"
+            value="{{team.description}}" maxlength="300"
+            char-counter always-float-label></paper-input>
+      <playing-dropzone name="content"
+              label="[[i18n('play.team.field.image')]]"
+              document="{{team}}" xpath="image"></playing-dropzone>
+    </div>
+
+    <mostly-collapse-button>
+      <div slot="collapse-trigger">[[i18n('play.team.advanced')]]</div>
+      <div slot="collapse-content">
+        <label>[[i18n('documentPage.tags')]]</label>
+        <playing-tag-suggestion document="[[team]]" allow-new-tags
+                placeholder="[[i18n('documentPage.tags.placeholder')]]">
+        </playing-tag-suggestion>
+
+        <label>[[i18n('play.team.field.constraints')]]</label>
+        <div class="form-row">
+          <div class="flex">
+            <paper-input name="constraints.minimum" label="[[i18n('play.team.team.constraints.minimum')]]"
+                  type="number" value="{{team.constraints.minimum}}" always-float-label></paper-input>
+          </div>
+          <div class="flex">
+            <paper-input name="constraints.maximum" label="[[i18n('play.team.team.constraints.maximum')]]"
+                  type="number" value="{{team.constraints.maximum}}" always-float-label></paper-input>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="flex">
+            <paper-input name="constraints.default" label="[[i18n('play.team.team.constraints.default')]]"
+                  type="number" value="{{team.constraints.default}}" always-float-label></paper-input>
+          </div>
+          <div class="flex">&nbsp;</div>
+        </div>
+      </div>
+    </mostly-collapse-button>
+
+  </template>
+
+  <script>
+    class PlayingEditTeam extends Polymer.mixinBehaviors([Mostly.I18nBehavior], Polymer.Element) {
+
+      static get is() { return 'playing-edit-team' };
+
+      static get properties() {
+        return {
+          /**
+           * The team object to be edited or created.
+           */
+          team: {
+            type: Object,
+            value: {}
+          },
+
+          /**
+           * If true, a new team is being created; if false, an already existing team is being edited.
+           */
+          new: {
+            type: Boolean,
+            value: false
+          },
+
+          resultFormatter: {
+            type: Function,
+            value: function() {
+              return this._resultFormatter.bind(this);
+            }
+          }
+        }
+      }
+
+      /**
+       * Resets the form fields to empty values.
+       */
+      _resetFields() {
+        this.team = { constraints: {} };
+      }
+
+      _resultFormatter(item) {
+        return item.name;
+      }
+    }
+
+    customElements.define(PlayingEditTeam.is, PlayingEditTeam);
+  </script>
+</dom-module>
