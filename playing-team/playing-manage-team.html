@@ -16,7 +16,7 @@ An element for managing a team.
 
 Example:
 
-    <playing-manage-team team="Administrator"></playing-manage-team>
+    <playing-manage-team team="team"></playing-manage-team>
 
 @group Playing Elements
 @element playing-manage-team
@@ -55,14 +55,14 @@ Example:
         margin-top: 10px;
       }
 
-      .teams {
+      .actions {
         @apply --layout-horizontal;
         @apply --layout-flex;
         @apply --layout-center;
         @apply --layout-end-justified;
       }
 
-      .teams paper-button {
+      .actions paper-button {
         margin-left: 1em;
       }
 
@@ -122,7 +122,7 @@ Example:
           <h4 class="subname">[[i18n('play.team.heading')]]</h4>
         </div>
 
-        <div class="teams">
+        <div class="actions">
 
           <!-- delete -->
           <paper-button noink id="deleteTeamButton" class="horizontal layout center" on-tap="_toggleDeleteTeam">

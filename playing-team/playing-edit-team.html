@@ -15,18 +15,22 @@ Example:
         display: block;
         width: 100%;
       }
+
+      *[role=widget] {
+        margin-bottom: 16px;
+      }
     </style>
 
     <div class="layout vertical">
       <paper-input name="description" label="[[i18n('play.team.field.description')]]"
             value="{{team.description}}" maxlength="300"
             char-counter always-float-label></paper-input>
-      <playing-dropzone name="content"
+      <playing-dropzone name="image" role="widget"
               label="[[i18n('play.team.field.image')]]"
               document="{{team}}" xpath="image"></playing-dropzone>
     </div>
 
-    <mostly-collapse-button>
+    <mostly-collapse-button role="widget">
       <div slot="collapse-trigger">[[i18n('play.team.advanced')]]</div>
       <div slot="collapse-content">
         <label>[[i18n('documentPage.tags')]]</label>
