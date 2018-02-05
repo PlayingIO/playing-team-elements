@@ -33,9 +33,9 @@ Example:
     <mostly-collapse-button role="widget">
       <div slot="collapse-trigger">[[i18n('play.team.advanced')]]</div>
       <div slot="collapse-content">
-        <label>[[i18n('documentPage.tags')]]</label>
-        <playing-tag-suggestion document="[[team]]" allow-new-tags
-                placeholder="[[i18n('documentPage.tags.placeholder')]]">
+        <label>[[i18n('playing.tags')]]</label>
+        <playing-tag-suggestion path="teams" target="[[team]]" allow-new-tags
+                placeholder="[[i18n('playing.tags.placeholder')]]">
         </playing-tag-suggestion>
 
         <label>[[i18n('play.team.field.constraints')]]</label>
