@@ -9,7 +9,9 @@
 <link rel="import" href="../../mostly-elements/behaviors/mostly-i18n-behavior.html">
 <link rel="import" href="../../mostly-elements/mostly-common/mostly-connection.html">
 <link rel="import" href="../../mostly-elements/mostly-common/mostly-resource.html">
+<link rel="import" href="../../mostly-elements/widgets/mostly-card.html">
 <link rel="import" href="../../mostly-elements/widgets/mostly-dialog.html">
+<link rel="import" href="../../mostly-elements/widgets/mostly-input.html">
 
 <link rel="import" href="playing-edit-team.html">
 <link rel="import" href="playing-view-team.html">
@@ -32,6 +34,10 @@ Example:
         display: block;
       }
 
+      [hidden] {
+        display: none !important;
+      }
+
       label {
         font-weight: bold;
         margin-bottom: 5px;
@@ -39,6 +45,7 @@ Example:
 
       .header {
         @apply --layout-start;
+        padding: 0px;
       }
 
       .backButton {
@@ -82,8 +89,8 @@ Example:
         text-decoration: underline;
       }
 
-      playing-view-team {
-        margin: 2em;
+      #viewer, #editor {
+        margin: 1em;
       }
 
       paper-dialog {
@@ -105,10 +112,6 @@ Example:
         padding: 2em;
         font-size: 1.1rem;
       }
-
-      paper-card {
-        @apply --mostly-card;
-      }
     </style>
 
     <mostly-resource id="request" path="teams" schemas='*'></mostly-resource>
@@ -116,7 +119,7 @@ Example:
 
     <paper-toast id="toast"></paper-toast>
 
-    <paper-card>
+    <mostly-card>
       <div class="header horizontal layout">
         <paper-icon-button class="backButton" icon="icons:arrow-back" on-tap="_goHome"></paper-icon-button>
         <iron-icon icon="playing:team" class="icon"></iron-icon>
@@ -140,15 +143,19 @@ Example:
         </div>
       </div>
 
-      <iron-pages selected="[[page]]" attr-for-selected="name">
-        <section name="viewer">
-          <playing-view-team id="teamViewer" team="[[team]]"></playing-view-team>
+      <div id="errors" hidden$="[[!errors]]">[[errors]]</div>
+
+      <iron-pages selected="[[page]]" attr-for-selected="id">
+        <section id="viewer">
+          <mostly-layout id="viewerLayout" href="[[_layoutHref('view')]]"
+                  model="[[_layoutModel(team, new)]]"></mostly-layout>
         </section>
-        <section name="editor">
+        <section id="editor">
           <h2>[[i18n('play.team.editTeam.heading')]]</h2>
           <iron-form id="editTeamForm">
             <form class="vertical layout">
-              <playing-edit-team id="teamEditor" team="[[team]]"></playing-edit-team>
+              <mostly-layout id="viewerLayout" href="[[_layoutHref('edit')]]"
+                      model="[[_layoutModel(team, new)]]"></mostly-layout>
             </form>
           </iron-form>
           <div class="horizontal end-justified layout">
@@ -160,7 +167,7 @@ Example:
             </paper-button>
           </div>
         </section>
-    </paper-card>
+    </mostly-card>
 
     <mostly-dialog id="deleteTeamDialog" with-backdrop>
       <h2>[[i18n('play.team.delete.confirm')]]</h2>
@@ -225,6 +232,17 @@ Example:
             this.team = response.data;
           });
         }
+      }
+
+      _layoutHref(type, layout) {
+        return type && this.resolveUrl(`playing-${layout}-team.html`);
+      }
+
+      _layoutModel() {
+        return {
+          team: this.team,
+          "new": true
+        };
       }
 
       _toggleDialog(e) {

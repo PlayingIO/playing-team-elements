@@ -13,7 +13,6 @@ Example:
     <style include="mostly-styles">
       :host {
         display: block;
-        width: 100%;
       }
 
       *[role=widget] {
@@ -22,9 +21,9 @@ Example:
     </style>
 
     <div class="layout vertical">
-      <paper-input name="description" label="[[i18n('play.team.field.description')]]"
+      <mostly-input name="description" label="[[i18n('play.team.field.description')]]"
             value="{{team.description}}" maxlength="300"
-            char-counter always-float-label></paper-input>
+            char-counter always-float-label></mostly-input>
       <playing-dropzone name="image" role="widget"
               label="[[i18n('play.team.field.image')]]"
               document="{{team}}" xpath="image"></playing-dropzone>

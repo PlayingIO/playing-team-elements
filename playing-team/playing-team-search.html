@@ -37,37 +37,25 @@
         opacity: 0.6;
       }
 
-      .counter {
-        margin-right: 2em;
-      }
-
       h3 iron-icon {
         width: 1.3em;
         margin-right: .2rem;
       }
-
-      paper-card {
-        @apply --mostly-card;
-      }
-
     </style>
 
     <mostly-resource id="teamSearch" auto
             path="teams"
             response="{{teams}}"></mostly-resource>
 
-    <paper-card class="search">
-      <paper-input noink autofocus="true" value="{{searchTerm}}" type="search"
+    <mostly-card class="search">
+      <mostly-input noink autofocus="true" value="{{searchTerm}}" type="search"
               placeholder="[[i18n('play.team.search.placeholder')]]">
         <iron-icon icon="mostly:search" prefix></iron-icon>
-      </paper-input>
-    </paper-card>
+      </mostly-input>
+    </mostly-card>
 
     <!-- teams -->
-    <paper-card name="teams">
-      <h3 class="title">
-        <iron-icon icon="playing:team" prefix></iron-icon>  [[i18n('play.team.heading')]]
-      </h3>
+    <mostly-card icon="playing:team" heading="[[i18n('play.team.heading')]]">
       <div class="fade-6">
         <p>[[i18n('play.team.guide.search')]]</p>
       </div>
@@ -91,7 +79,7 @@
         </div>
       </div>
       <mostly-pagination-controls page="{{teamsCurrentPage}}" number-of-pages="[[teams.numberOfPages]]"></mostly-pagination-controls>
-    </paper-card>
+    </mostly-card>
 
   </template>
 

@@ -8,9 +8,11 @@
 <link rel="import" href="../../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../paper-toggle-button/paper-toggle-button.html">
 
+<link rel="import" href="../../mostly-elements/mostly-layout.html">
 <link rel="import" href="../../mostly-elements/behaviors/mostly-i18n-behavior.html">
 <link rel="import" href="../../mostly-elements/mostly-common/mostly-connection.html">
 <link rel="import" href="../../mostly-elements/mostly-common/mostly-resource.html">
+<link rel="import" href="../../mostly-elements/widgets/mostly-input.html">
 
 <link rel="import" href="playing-edit-team.html">
 
@@ -26,91 +28,84 @@
         display: block;
       }
 
-      form {
-        margin: 24px 0 0;
+      .header {
+        @apply --layout-start;
+        padding: 0px;
       }
 
       .backButton {
         color: var(--mostly-button-primary, #00adff);
       }
 
-      .header > iron-icon {
-        padding: 8px;
+      .name {
+        margin: 10px 0 5px 5px;
+      }
+
+      .subname {
+        font-weight: normal;
+        margin: 0 0 0 5px;
+      }
+
+      .icon {
+        margin-top: 8px;
+      }
+
+      #form {
+        margin: 1em;
+      }
+
+      .form-buttons {
+        color: var(--mostly-button-primary, #00adff);
       }
 
       .fade-6 {
         opacity: 0.6;
       }
 
-      #another {
-        margin: 2em 0;
-      }
-
-      paper-radio-group {
-        outline: none;
-      }
-
-      paper-radio-button {
-        margin-right: 10px;
-        padding: 0;
-      }
-
-      .label-password {
-        margin-top: 16px;
-      }
-
       #errors {
         color: red;
         margin: 1em 0;
-      }
-
-      .header h3  {
-        margin-bottom: 0;
-      }
-
-      h3 iron-icon {
-        width: 1.3em;
-        margin-right: .2rem;
-      }
-
-      .form-buttons {
-        padding: 1em;
-        margin: 16px -1.2rem 0;
       }
     </style>
 
     <mostly-resource id="request" path="teams"></mostly-resource>
 
-    <div class="header horizontal layout center">
-      <paper-icon-button class="backButton" icon="icons:arrow-back" on-tap="_goHome"></paper-icon-button>
-      <h3><iron-icon icon="playing:team"></iron-icon>[[i18n('play.team.heading')]]</h3>
-    </div>
-
-    <iron-form id="form">
-      <form class="vertical layout">
-        <div class="fade-6">
-          <p>[[i18n('play.team.guide')]]</p>
+    <mostly-card>
+      <div class="header horizontal layout">
+        <paper-icon-button class="backButton" icon="icons:arrow-back" on-tap="_goHome"></paper-icon-button>
+        <iron-icon icon="playing:team" class="icon"></iron-icon>
+        <div class="layout vertical">
+          <h3 class="name">[[i18n('play.team.heading')]]</h3>
+          <h4 class="subname">[[i18n('play.team.new')]]</h4>
         </div>
-      
-        <paper-input name="name" label="[[i18n('play.team.field.name')]]"
-                value="{{team.name}}" minlength="3" maxlength="20"
-                auto-validate required always-float-label>
-        </paper-input>
+      </div>
 
-        <playing-edit-team id="propertyEditor" team="{{team}}" new></playing-edit-team>
+      <iron-form id="form">
+        <form class="vertical layout">
+          <div class="fade-6">
+            <p>[[i18n('play.team.guide')]]</p>
+          </div>
+        
+          <mostly-input name="name" label="[[i18n('play.team.field.name')]]"
+                  value="{{team.name}}" minlength="3" maxlength="20"
+                  auto-validate required always-float-label>
+          </mostly-input>
 
-        <div class="form-buttons">
-          <paper-button noink id="cancelButton" on-tap="_cancel">[[i18n('command.cancel')]]</paper-button>
-          <paper-button noink id="createButton" class="primary" on-tap="_submit">[[i18n('command.create')]]</paper-button>
-          <paper-button noink id="createAnotherButton" class="primary" on-tap="_submitAnother">
-            [[i18n('play.team.new.another')]]
-          </paper-button>
-        </div>
+          <playing-edit-team id="propertyEditor" team="{{team}}" new></playing-edit-team>
 
-        <span id="errors" hidden$="[[!_hasErrors(errors)]]">[[errors]]</span>
+          <div class="form-buttons">
+            <paper-button noink id="cancelButton" on-tap="_cancel">[[i18n('command.cancel')]]</paper-button>
+            <paper-button noink id="createButton" class="primary" on-tap="_submit">[[i18n('command.create')]]</paper-button>
+            <paper-button noink id="createAnotherButton" class="primary" on-tap="_submitAnother">
+              [[i18n('play.team.new.another')]]
+            </paper-button>
+          </div>
 
-      </form>
-    </iron-form>
+          <span id="errors" hidden$="[[!_hasErrors(errors)]]">[[errors]]</span>
+
+        </form>
+      </iron-form>
+    </mostly-card>
 
   </template>
 
