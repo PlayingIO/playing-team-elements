@@ -6,6 +6,7 @@
 <link rel="import" href="../../paper-toast/paper-toast.html">
 
 <link rel="import" href="../../mostly-elements/behaviors/mostly-filters-behavior.html">
+<link rel="import" href="../../mostly-elements/behaviors/mostly-func-behavior.html">
 <link rel="import" href="../../mostly-elements/behaviors/mostly-i18n-behavior.html">
 <link rel="import" href="../../mostly-elements/mostly-common/mostly-connection.html">
 <link rel="import" href="../../mostly-elements/mostly-common/mostly-resource.html">
@@ -183,7 +184,7 @@ Example:
 
   <script>
     class PlayingManageTeam extends Polymer.mixinBehaviors(
-        [Mostly.I18nBehavior, Mostly.FiltersBehavior], Polymer.Element) {
+        [Mostly.I18nBehavior, Mostly.FiltersBehavior, Mostly.FuncBehavior], Polymer.Element) {
 
       static get is() { return 'playing-manage-team' };
 
@@ -198,10 +199,18 @@ Example:
             notify: true
           },
 
+          /**
+           * the current team
+           */
           team: {
             type: Object,
             observer: '_fetch'
           },
+
+          /**
+           * original team object
+           */
+          origTeam: Object,
 
           empty: Boolean,
 
@@ -230,6 +239,7 @@ Example:
         if (typeof this.team === 'string') {
           this.$.request.get().then((response) => {
             this.team = response.data;
+            this.origTeam = this.fp.clone(this.team);
           });
         }
       }
@@ -250,10 +260,15 @@ Example:
       }
 
       _toggleEditTeam() {
-        this.page = (this.page === 'viewer')? 'editor' : 'viewer';
+        if (this.page === 'viewer') {
+          this.page = 'editor';
+        } else {
+          this._cancelEditTeam();
+        }
       }
 
       _cancelEditTeam() {
+        this.set('team', this.fp.clone(this.origTeam));
         this.page = 'viewer';
       }
 
