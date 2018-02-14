@@ -81,26 +81,8 @@ Example:
           new: {
             type: Boolean,
             value: false
-          },
-
-          resultFormatter: {
-            type: Function,
-            value: function() {
-              return this._resultFormatter.bind(this);
-            }
           }
         }
-      }
-
-      /**
-       * Resets the form fields to empty values.
-       */
-      _resetFields() {
-        this.team = { constraints: {} };
-      }
-
-      _resultFormatter(item) {
-        return item.name;
       }
     }
 
