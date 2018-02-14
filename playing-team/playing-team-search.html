@@ -71,7 +71,7 @@
               <div class="flex-4">[[item.description]]</div>
             </div>
           </template>
-          <template is="dom-if" if=[[_empty(teams.data)]]>
+          <template is="dom-if" if=[[!teams.data.length]]>
             <div class="table-row">
               <div class="empty-result">[[i18n('play.team.search.empty')]]</div>
             </div>
@@ -136,11 +136,6 @@
       _manageTeam(e) {
         this.fire('manageTeam', { team: e.model.item });
       }
-
-      _empty(entries) {
-        return entries && entries.length === 0;
-      }
-
     }
 
     customElements.define(PlayingTeamSearch.is, PlayingTeamSearch);
