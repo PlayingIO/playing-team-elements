@@ -14,6 +14,7 @@
 <link rel="import" href="../../mostly-elements/mostly-common/mostly-resource.html">
 <link rel="import" href="../../mostly-elements/widgets/mostly-input.html">
 <link rel="import" href="../../playing-elements/playing-styles.html">
+<link rel="import" href="../../playing-rule-elements/playing-rule/playing-edit-conditions.html">
 
 <link rel="import" href="../behaviors/playing-team-behavior.html">
 <link rel="import" href="playing-edit-team.html">
@@ -122,7 +123,13 @@
         return {
           team: {
             type: Object,
-            value: () => { return { constraints: {} } }
+            value: () => {
+              return {
+                access: {},
+                permissions: [],
+                settings: {}
+              };
+            }
           },
 
           errors: {
@@ -176,6 +183,14 @@
        * Creates a new team if the form was successfully submitted.
        */
       _create() {
+        if (this.team.permissions) {
+          this.team.creatorRoles = this.team.permissions.reduce((arr, perm) => {
+            if (perm.permits && perm.permits.creatorRoles) {
+              arr.push(perm.role);
+            }
+            return arr;
+          }, []);
+        }
         this._doCreate(this.team).then((team) => {
           this._resetFields();
           if (!this._createAnother) {
@@ -199,7 +214,7 @@
       }
 
       _resetFields() {
-        this.team = {};
+        this.team = { permissions: [], settings: {} };
         this.errors = '';
       }
 

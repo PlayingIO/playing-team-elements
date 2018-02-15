@@ -18,40 +18,159 @@ Example:
       *[role=widget] {
         margin-bottom: 16px;
       }
+
+      mostly-collapse-button {
+        margin: 16px 0px;
+      }
+
+      .access-toggle {
+        background-color: #fff;
+        color: #6d7684;
+        border-radius: 3em;
+        box-shadow: none;
+        font-size: 1rem;
+        padding: .2em .7em .3em;
+        margin: 0 .5em .5em 0;
+        text-transform: none;
+      }
+
+      .access-toggle[active] {
+        box-shadow: none;
+        background-color: #00adff;
+        color: #fff;
+      }
     </style>
 
     <div class="layout vertical">
       <mostly-input name="description" label="[[i18n('play.team.field.description')]]"
             value="{{team.description}}" maxlength="300"
             char-counter always-float-label></mostly-input>
+
       <playing-dropzone name="image" role="widget"
               label="[[i18n('play.team.field.image')]]"
               document="{{team}}" xpath="image"></playing-dropzone>
     </div>
 
-    <mostly-collapse-button role="widget">
+    <!-- access -->
+    <label role="widget">[[i18n('play.team.access')]]</label>
+    <div class="layout horizontal">
+      <paper-button toggles noink class="access-toggle" active$="{{team.access.public}}">
+        [[i18n('play.team.access.public')]]
+      </paper-button>
+      <paper-button toggles noink class="access-toggle" active$="{{team.access.protected}}">
+        [[i18n('play.team.access.protected')]]
+      </paper-button>
+      <paper-button toggles noink class="access-toggle" active$="{{team.access.private}}">
+        [[i18n('play.team.access.private')]]
+      </paper-button>
+    </div>
+
+    <!-- permissions -->
+    <div class="layout vertical">
+      <label>[[i18n('play.team.permissions')]]</label>
+
+      <div class="table-header">
+        <div class="form-actions">&nbsp;</div>
+        <div class="flex-2">[[i18n('play.team.permission.role')]]</div>
+        <div class="flex-1">[[i18n('play.team.creator.roles')]]</div>
+        <div class="flex-4 center">[[i18n('play.team.permission.permits')]]</div>
+        <div class="form-actions">&nbsp;</div>
+      </div>
+      <div class="form-row">
+        <div class="form-actions">&nbsp;</div>
+        <div class="flex-2">&nbsp;</div>
+        <div class="flex-1">&nbsp;</div>
+        <div class="flex-1 center">[[i18n('play.team.permission.permit.lock')]]</div>
+        <div class="flex-1 center">[[i18n('play.team.permission.permit.peer')]]</div>
+        <div class="flex-1 center">[[i18n('play.team.permission.permit.assign')]]</div>
+        <div class="flex-1 center">[[i18n('play.team.permission.permit.leave')]]</div>
+        <div class="form-actions">&nbsp;</div>
+      </div>
+
+      <template is="dom-repeat" items="{{team.permissions}}" as="permit">
+        <div class="form-row">
+          <div class="form-actions">[[index]]</div>
+          <div class="flex-2">
+            <mostly-input name="role"
+                    value="{{permit.role}}" maxlength="20"
+                    required></mostly-input>
+          </div>
+          <div class="flex-1 center">
+            <mostly-toggle-icon icon="playing:cross" icon-checked="playing:tick"
+                    checked="{{permit.permits.creatorRoles}}"></mostly-toggle-icon>
+          </div>
+          <div class="flex-1 center">
+            <mostly-toggle-icon icon="playing:cross" icon-checked="playing:tick"
+                    checked="{{permit.permits.lock}}"></mostly-toggle-icon>
+          </div>
+          <div class="flex-1 center">
+            <mostly-toggle-icon icon="playing:cross" icon-checked="playing:tick"
+                    checked="{{permit.permits.peer}}"></mostly-toggle-icon>
+          </div>
+          <div class="flex-1 center">
+            <mostly-toggle-icon icon="playing:cross" icon-checked="playing:tick"
+                    checked="{{permit.permits.assign}}"></mostly-toggle-icon>
+          </div>
+          <div class="flex-1 center">
+            <mostly-toggle-icon icon="playing:cross" icon-checked="playing:tick"
+                    checked="{{permit.permits.leave}}"></mostly-toggle-icon>
+          </div>
+          <div class="form-actions">
+            <iron-icon icon="mostly:remove" class="remove" data-index="[[index]]" on-tap="_removePermit"></iron-icon>
+          </div>
+        </div>
+      </template>
+
+      <template is="dom-if" if=[[!team.permissions.length]]>
+        <div class="form-row">
+          <div class="empty-result">[[i18n('play.team.permissions.empty')]]</div>
+        </div>
+      </template>
+
+    </div>
+
+    <div class="form-buttons">
+      <paper-button noink class="primary" on-tap="_addPermit">[[i18n('command.add')]]</paper-button>
+    </div>
+
+    <mostly-collapse-button>
       <div slot="collapse-trigger">[[i18n('play.team.advanced')]]</div>
       <div slot="collapse-content">
-        <label>[[i18n('playing.tags')]]</label>
+        <label role="widget">[[i18n('playing.tags')]]</label>
         <playing-tag-suggestion path="teams" target="[[team]]" allow-new-tags
                 placeholder="[[i18n('playing.tags.placeholder')]]">
         </playing-tag-suggestion>
 
-        <label>[[i18n('play.team.field.constraints')]]</label>
+        <mostly-select
+                label="[[i18n('play.team.public')]]"
+                placeholder="[[i18n('play.team.public.placeholder')]]"
+                selected="{{team.settings.public}}"
+                on-selected-changed="_publicChanged"
+                attr-for-selected="name"
+                no-label-float required>
+          <paper-item name="true">[[i18n('play.team.public.true')]]</paper-item>
+          <paper-item name="false">[[i18n('play.team.public.false')]]</paper-item>
+        </mostly-select>
+
+        <template is="dom-if" if=[[team.settings.requires]]>
+          <playing-edit-conditions data="{{team.settings.requires}}"></playing-edit-conditions>
+        </template>
+
+        <label>[[i18n('play.team.restrictions')]]</label>
         <div class="form-row">
           <div class="flex">
-            <paper-input name="constraints.minimum" label="[[i18n('play.team.team.constraints.minimum')]]"
-                  type="number" value="{{team.constraints.minimum}}" always-float-label></paper-input>
+            <mostly-input name="maxPlayers" label="[[i18n('play.team.restriction.max-players')]]"
+                  type="number" value="{{team.settings.maxPlayers}}" always-float-label></mostly-input>
           </div>
           <div class="flex">
-            <paper-input name="constraints.maximum" label="[[i18n('play.team.team.constraints.maximum')]]"
-                  type="number" value="{{team.constraints.maximum}}" always-float-label></paper-input>
+            <mostly-input name="maxTeams" label="[[i18n('play.team.restriction.max-teams')]]"
+                  type="number" value="{{team.settings.maxTeams}}" always-float-label></mostly-input>
           </div>
         </div>
         <div class="form-row">
           <div class="flex">
-            <paper-input name="constraints.default" label="[[i18n('play.team.team.constraints.default')]]"
-                  type="number" value="{{team.constraints.default}}" always-float-label></paper-input>
+            <mostly-input name="playerTeams" label="[[i18n('play.team.restriction.player-teams')]]"
+                  type="number" value="{{team.settings.playerTeams}}" always-float-label></mostly-input>
           </div>
           <div class="flex">&nbsp;</div>
         </div>
@@ -82,6 +201,23 @@ Example:
             type: Boolean,
             value: false
           }
+        }
+      }
+
+      _addPermit() {
+        this.set('team.permissions', this.team.permissions || []);
+        this.push('team.permissions', { role: '', permits: {} });
+      }
+
+      _removePermit(e) {
+        this.splice('team.permissions', e.target.dataIndex, 1);
+      }
+
+      _publicChanged(e) {
+        if (e.detail.value === 'true') {
+          this.set('team.settings.requires', this.team.settings.requires || [{ rule: null }]);
+        } else {
+          this.set('team.settings.requires', null);
         }
       }
     }

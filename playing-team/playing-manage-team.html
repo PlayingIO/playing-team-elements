@@ -117,8 +117,8 @@ Example:
       }
     </style>
 
-    <mostly-resource id="request" path="teams" schemas='*'></mostly-resource>
-    <mostly-resource id="editRequest" path="teams" schemas='*'></mostly-resource>
+    <mostly-resource id="request" path="[[path]]" schemas='*'></mostly-resource>
+    <mostly-resource id="editRequest" path="[[path]]" schemas='*'></mostly-resource>
 
     <paper-toast id="toast"></paper-toast>
 
@@ -213,6 +213,11 @@ Example:
            * original team object
            */
           origTeam: Object,
+
+          path: {
+            type: String,
+            computed: 'teamPath(team)'
+          },
 
           empty: Boolean,
 

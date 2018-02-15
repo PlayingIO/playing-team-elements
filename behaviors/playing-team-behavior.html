@@ -10,19 +10,11 @@
 
     properties: {
       /**
-       * rate limiting windows
+       * access channels
        */
-      rateWindows: {
+      accessChannels: {
         type: Array,
-        value: ['fixed', 'rolling', 'leaky']
-      },
-
-      /**
-       * rate limiting windows
-       */
-      rateIntervals: {
-        type: Array,
-        value: ['minute', 'hour', 'day', 'week', 'month', 'year']
+        value: ['public', 'protected', 'private']
       }
     },
 
