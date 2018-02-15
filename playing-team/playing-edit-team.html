@@ -22,23 +22,6 @@ Example:
       mostly-collapse-button {
         margin: 16px 0px;
       }
-
-      .access-toggle {
-        background-color: #fff;
-        color: #6d7684;
-        border-radius: 3em;
-        box-shadow: none;
-        font-size: 1rem;
-        padding: .2em .7em .3em;
-        margin: 0 .5em .5em 0;
-        text-transform: none;
-      }
-
-      .access-toggle[active] {
-        box-shadow: none;
-        background-color: #00adff;
-        color: #fff;
-      }
     </style>
 
     <div class="layout vertical">
@@ -53,17 +36,11 @@ Example:
 
     <!-- access -->
     <label role="widget">[[i18n('play.team.access')]]</label>
-    <div class="layout horizontal">
-      <paper-button toggles noink class="access-toggle" active$="{{team.access.public}}">
-        [[i18n('play.team.access.public')]]
-      </paper-button>
-      <paper-button toggles noink class="access-toggle" active$="{{team.access.protected}}">
-        [[i18n('play.team.access.protected')]]
-      </paper-button>
-      <paper-button toggles noink class="access-toggle" active$="{{team.access.private}}">
-        [[i18n('play.team.access.private')]]
-      </paper-button>
-    </div>
+    <mostly-buttons-group role="widget" multi attr-for-selected="name" selected-values="{{team.access}}">
+      <paper-button name="public">[[i18n('play.team.access.public')]]</paper-button>
+      <paper-button name="protected">[[i18n('play.team.access.protected')]]</paper-button>
+      <paper-button name="private">[[i18n('play.team.access.private')]]</paper-button>
+    </mostly-buttons-group>
 
     <!-- permissions -->
     <div class="layout vertical">
