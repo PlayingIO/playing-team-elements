@@ -13,7 +13,9 @@
 <link rel="import" href="../../mostly-elements/mostly-common/mostly-connection.html">
 <link rel="import" href="../../mostly-elements/mostly-common/mostly-resource.html">
 <link rel="import" href="../../mostly-elements/widgets/mostly-input.html">
+<link rel="import" href="../../playing-elements/playing-styles.html">
 
+<link rel="import" href="../behaviors/playing-team-behavior.html">
 <link rel="import" href="playing-edit-team.html">
 
 <!--
@@ -91,7 +93,8 @@
                   auto-validate required always-float-label>
           </mostly-input>
 
-          <playing-edit-team id="propertyEditor" team="{{team}}" new></playing-edit-team>
+          <mostly-layout id="viewerLayout" href="[[layoutHref('edit')]]"
+                    model="[[layoutModel(team, new)]]"></mostly-layout>
 
           <div class="form-buttons">
             <paper-button noink id="cancelButton" on-tap="_cancel">[[i18n('command.cancel')]]</paper-button>
@@ -110,7 +113,8 @@
   </template>
 
   <script>
-    class PlayingCreateTeam extends Polymer.mixinBehaviors([Mostly.I18nBehavior], Polymer.Element) {
+    class PlayingCreateTeam extends Polymer.mixinBehaviors(
+          [Mostly.I18nBehavior, Playing.TeamBehavior], Polymer.Element) {
 
       static get is() { return 'playing-create-team' };
 

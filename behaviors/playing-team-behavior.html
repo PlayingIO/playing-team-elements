@@ -1,0 +1,49 @@
+<link rel="import" href="../../mostly-elements/behaviors/mostly-func-behavior.html">
+
+<script>
+  var Playing = Playing || {};
+
+  /**
+   * @polymerBehavior Playing.TeamBehavior
+   */
+  Playing.TeamBehavior = [Mostly.FuncBehavior, {
+
+    properties: {
+      /**
+       * rate limiting windows
+       */
+      rateWindows: {
+        type: Array,
+        value: ['fixed', 'rolling', 'leaky']
+      },
+
+      /**
+       * rate limiting windows
+       */
+      rateIntervals: {
+        type: Array,
+        value: ['minute', 'hour', 'day', 'week', 'month', 'year']
+      }
+    },
+
+    teamPath(team) {
+      if (team && team.id) {
+        return 'teams/' + team.id;
+      } else {
+        return 'teams/' + team;
+      }
+    },
+
+    layoutHref(layout) {
+      return layout && this.resolveUrl(`playing-${layout}-team.html`);
+    },
+
+    layoutModel() {
+      return {
+        team: this.team,
+        "new": true
+      };
+    }
+
+  }];
+</script>

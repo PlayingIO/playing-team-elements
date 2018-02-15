@@ -10,7 +10,7 @@ Example:
 -->
 <dom-module id="playing-view-team">
   <template>
-    <style include="mostly-styles">
+    <style include="mostly-styles playing-styles">
       :host {
         display: block;
       }
@@ -55,7 +55,8 @@ Example:
   </template>
 
   <script>
-    class PlayingViewTeam extends Polymer.mixinBehaviors([Mostly.I18nBehavior], Polymer.Element) {
+    class PlayingViewTeam extends Polymer.mixinBehaviors(
+        [Mostly.I18nBehavior, Playing.TeamBehavior], Polymer.Element) {
 
       static get is() { return 'playing-view-team' };
 
