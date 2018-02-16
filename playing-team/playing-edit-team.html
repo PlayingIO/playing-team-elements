@@ -110,10 +110,10 @@ Example:
       <paper-button noink class="primary" on-tap="_addPermit">[[i18n('command.add')]]</paper-button>
     </div>
 
-    <mostly-collapse-button>
+    <mostly-collapse-button role="widget">
       <div slot="collapse-trigger">[[i18n('play.team.advanced')]]</div>
       <div slot="collapse-content">
-        <label role="widget">[[i18n('playing.tags')]]</label>
+        <label>[[i18n('playing.tags')]]</label>
         <playing-tag-suggestion path="teams" target="[[team]]" allow-new-tags
                 placeholder="[[i18n('playing.tags.placeholder')]]">
         </playing-tag-suggestion>
