@@ -245,7 +245,7 @@ Example:
       _fetch() {
         if (typeof this.team === 'string') {
           this.$.request.get().then((response) => {
-            this.team = response.data;
+            this.team = this.afterFetch(response.data);
             this.origTeam = this.fp.clone(this.team);
           });
         }
@@ -274,11 +274,11 @@ Example:
 
       _saveTeam() {
         this.page = 'viewer';
-        this.setCreatorRoles(this.team);
+        this.beforeSubmit(this.team);
         var editedTeam = JSON.parse(JSON.stringify(this.team));
         this.$.editRequest.data = editedTeam;
         this.$.editRequest.patch().then((response) => {
-          this.team = response.data;
+          this.team = this.afterFetch(response.data);
           this._toast(this.i18n('play.team.updated'));
         });
       }

@@ -138,15 +138,8 @@ Example:
            */
           team: {
             type: Object,
-            value: {},
-            observer: '_refresh'
+            value: {}
           }
-        }
-      }
-
-      _refresh() {
-        if (this.team && this.team.permissions) {
-          this.setCreatorRoles(this.team);
         }
       }
 

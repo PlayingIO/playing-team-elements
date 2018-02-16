@@ -51,18 +51,21 @@
       }
     },
 
-    getCreatorRoles(team) {
+    beforeSubmit(team) {
+      var creatorRoles = [];
       if (team.permissions) {
-        return team.permissions.reduce((arr, perm) => {
+        creatorRoles = team.permissions.reduce((arr, perm) => {
           if (perm.permits && perm.permits.creatorRoles) {
             arr.push(perm.role);
           }
           return arr;
         }, []);
       }
+      team.creatorRoles = creatorRoles;
+      return team;
     },
 
-    setCreatorRoles(team) {
+    afterFetch(team) {
       if (team.permissions && team.creatorRoles) {
         team.permissions.forEach((perm) => {
           if (perm.permits && team.creatorRoles.indexOf(perm.role) >= 0) {
@@ -72,6 +75,7 @@
           }
         });
       }
+      return team;
     }
 
   }];

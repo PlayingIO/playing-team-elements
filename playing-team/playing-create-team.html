@@ -184,7 +184,7 @@
        * Creates a new team if the form was successfully submitted.
        */
       _create() {
-        this.team.creatorRoles = this.getCreatorRoles(this.team);
+        this.beforeSubmit(this.team);
         this._doCreate(this.team).then((team) => {
           this._resetFields();
           if (!this._createAnother) {
