@@ -274,6 +274,7 @@ Example:
 
       _saveTeam() {
         this.page = 'viewer';
+        this.setCreatorRoles(this.team);
         var editedTeam = JSON.parse(JSON.stringify(this.team));
         this.$.editRequest.data = editedTeam;
         this.$.editRequest.patch().then((response) => {

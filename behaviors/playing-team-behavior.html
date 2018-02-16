@@ -35,6 +35,35 @@
         team: this.team,
         "new": true
       };
+    },
+
+    getRoles(team) {
+      if (team.permissions) {
+        return team.permissions.map(perm => perm.role);
+      }
+    },
+
+    getCreatorRoles(team) {
+      if (team.permissions) {
+        return team.permissions.reduce((arr, perm) => {
+          if (perm.permits && perm.permits.creatorRoles) {
+            arr.push(perm.role);
+          }
+          return arr;
+        }, []);
+      }
+    },
+
+    setCreatorRoles(team) {
+      if (team.permissions && team.creatorRoles) {
+        team.permissions.forEach((perm) => {
+          if (perm.permits && team.creatorRoles.indexOf(perm.role) >= 0) {
+            perm.permits.creatorRoles = true
+          } else {
+            perm.permits.creatorRoles = false;
+          }
+        });
+      }
     }
 
   }];

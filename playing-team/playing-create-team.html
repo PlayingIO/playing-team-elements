@@ -184,14 +184,7 @@
        * Creates a new team if the form was successfully submitted.
        */
       _create() {
-        if (this.team.permissions) {
-          this.team.creatorRoles = this.team.permissions.reduce((arr, perm) => {
-            if (perm.permits && perm.permits.creatorRoles) {
-              arr.push(perm.role);
-            }
-            return arr;
-          }, []);
-        }
+        this.team.creatorRoles = this.getCreatorRoles(this.team);
         this._doCreate(this.team).then((team) => {
           this._resetFields();
           if (!this._createAnother) {

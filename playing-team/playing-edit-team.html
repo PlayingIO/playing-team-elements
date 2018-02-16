@@ -129,7 +129,7 @@ Example:
           <paper-item name="false">[[i18n('play.team.creation.public.false')]]</paper-item>
         </mostly-select>
 
-        <template is="dom-if" if=[[team.settings.requires]]>
+        <template is="dom-if" if="[[team.settings.requires]]" restamp>
           <playing-edit-conditions data="{{team.settings.requires}}"></playing-edit-conditions>
         </template>
 
