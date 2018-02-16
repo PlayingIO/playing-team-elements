@@ -121,12 +121,13 @@ Example:
         <mostly-select
                 label="[[i18n('play.team.creation')]]"
                 placeholder="[[i18n('play.team.creation.placeholder')]]"
-                selected="{{team.settings.public}}"
+                selected="{{team.settings.creation}}"
                 on-selected-changed="_publicChanged"
                 attr-for-selected="name"
                 no-label-float required>
-          <paper-item name="true">[[i18n('play.team.creation.public.true')]]</paper-item>
-          <paper-item name="false">[[i18n('play.team.creation.public.false')]]</paper-item>
+          <template is="dom-repeat" items="[[creationTypes]]" as="item">
+            <paper-item name="[[item]]">[[p18n('play.team.creation', item)]]</paper-item>
+          </template>
         </mostly-select>
 
         <template is="dom-if" if="[[team.settings.requires]]" restamp>
@@ -157,7 +158,8 @@ Example:
   </template>
 
   <script>
-    class PlayingEditTeam extends Polymer.mixinBehaviors([Mostly.I18nBehavior], Polymer.Element) {
+    class PlayingEditTeam extends Polymer.mixinBehaviors(
+        [Mostly.I18nBehavior, Playing.TeamBehavior], Polymer.Element) {
 
       static get is() { return 'playing-edit-team' };
 
@@ -191,7 +193,7 @@ Example:
       }
 
       _publicChanged(e) {
-        if (e.detail.value === 'true') {
+        if (e.detail.value === 'public') {
           this.set('team.settings.requires', this.team.settings.requires || [{ rule: null }]);
         } else {
           this.set('team.settings.requires', null);

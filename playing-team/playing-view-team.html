@@ -99,9 +99,7 @@ Example:
     <div role="widget">
       <label>[[i18n('play.team.creation')]]</label>
       [[i18n('play.team.creation.placeholder')]]
-      <template is="dom-if" if="[[!team.settings.public]]">
-        <mostly-tag>[[i18n('play.team.creation.public.true')]]</mostly-tag>
-      </template>
+      <mostly-tag>[[p18n('play.team.creation', team.settings.creation)]]</mostly-tag>
       <template is="dom-if" if=[[team.settings.requires]]>
         <playing-view-conditions data="[[team.settings.requires]]"></playing-view-conditions>
       </template>
