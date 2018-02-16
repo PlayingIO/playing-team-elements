@@ -45,6 +45,23 @@
       };
     },
 
+    emptyTeam() {
+      return {
+        access: [],
+        permissions: [],
+        settings: {}
+      };
+    },
+
+    resetFields() {
+      this.team = this.emptyTeam();
+      this.errors = '';
+    },
+
+    hasErrors() {
+      return this.errors !== '';
+    },
+
     getRoles(team) {
       if (team.permissions) {
         return team.permissions.map(perm => perm.role);

@@ -101,7 +101,7 @@
             </paper-button>
           </div>
 
-          <span id="errors" hidden$="[[!_hasErrors(errors)]]">[[errors]]</span>
+          <span id="errors" hidden$="[[!hasErrors(errors)]]">[[errors]]</span>
 
         </form>
       </iron-form>
@@ -119,12 +119,8 @@
         return {
           team: {
             type: Object,
-            value: () => {
-              return {
-                access: [],
-                permissions: [],
-                settings: {}
-              };
+            value() {
+              return this.emptyTeam();
             }
           },
 
@@ -156,7 +152,7 @@
       }
 
       _goHome() {
-        this._resetFields();
+        this.resetFields();
         this.fire('goHome');
       }
 
@@ -182,7 +178,7 @@
       _create() {
         this.beforeSubmit(this.team);
         this._doCreate(this.team).then((team) => {
-          this._resetFields();
+          this.resetFields();
           if (!this._createAnother) {
             this._goHome();
           }
@@ -200,15 +196,6 @@
 
       _cancel() {
         this._goHome();
-      }
-
-      _resetFields() {
-        this.team = { permissions: [], settings: {} };
-        this.errors = '';
-      }
-
-      _hasErrors() {
-        return this.errors !== '';
       }
     }
 
