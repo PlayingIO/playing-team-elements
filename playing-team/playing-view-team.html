@@ -34,19 +34,92 @@ Example:
       <img id="image" src$="[[team.image.url]]">
     </div>
 
+    <!-- access -->
     <div role="widget">
-      <label>[[i18n('play.team.field.constraints')]]</label>
+      <label role="widget">[[i18n('play.team.access')]]</label>
+      <div class="layout horizontal">
+        <template is="dom-repeat" items="[[team.access]]" as="item">
+          <mostly-tag>[[p18n('play.team.access', item)]]</mostly-tag>
+        </template>
+      </div>
+    </div>
+
+    <!-- permissions -->
+    <div role="widget" class="layout vertical">
+      <label role="widget">[[i18n('play.team.permissions')]]</label>
+
+      <div class="table-header">
+        <div class="form-actions">&nbsp;</div>
+        <div class="flex-2">[[i18n('play.team.permission.role')]]</div>
+        <div class="flex-1 center">[[i18n('play.team.creator.roles')]]</div>
+        <div class="flex-4 center">[[i18n('play.team.permission.permits')]]</div>
+      </div>
+      <div class="form-row">
+        <div class="form-actions">&nbsp;</div>
+        <div class="flex-2">&nbsp;</div>
+        <div class="flex-1">&nbsp;</div>
+        <div class="flex-1 center">[[i18n('play.team.permission.permit.lock')]]</div>
+        <div class="flex-1 center">[[i18n('play.team.permission.permit.peer')]]</div>
+        <div class="flex-1 center">[[i18n('play.team.permission.permit.assign')]]</div>
+        <div class="flex-1 center">[[i18n('play.team.permission.permit.leave')]]</div>
+      </div>
+
+      <template is="dom-repeat" items="{{team.permissions}}" as="permit">
+        <div class="form-row">
+          <div class="form-actions">[[index]]</div>
+          <div class="flex-2">
+            <label>[[permit.role]]</label>
+          </div>
+          <div class="flex-1 center">
+            <iron-icon icon="[[toggleIcon(permit.permits.creatorRoles)]]"></iron-icon>
+          </div>
+          <div class="flex-1 center">
+            <iron-icon icon="[[toggleIcon(permit.permits.lock)]]"></iron-icon>
+          </div>
+          <div class="flex-1 center">
+            <iron-icon icon="[[toggleIcon(permit.permits.peer)]]"></iron-icon>
+          </div>
+          <div class="flex-1 center">
+            <iron-icon icon="[[toggleIcon(permit.permits.assign)]]"></iron-icon>
+          </div>
+          <div class="flex-1 center">
+            <iron-icon icon="[[toggleIcon(permit.permits.leave)]]"></iron-icon>
+          </div>
+        </div>
+      </template>
+
+      <template is="dom-if" if=[[!team.permissions.length]]>
+        <div class="form-row">
+          <div class="empty-result">[[i18n('play.team.permissions.empty')]]</div>
+        </div>
+      </template>
+
+    </div>
+
+    <div role="widget">
+      <label>[[i18n('play.team.creation')]]</label>
+      [[i18n('play.team.creation.placeholder')]]
+      <template is="dom-if" if="[[!team.settings.public]]">
+        <mostly-tag>[[i18n('play.team.creation.public.true')]]</mostly-tag>
+      </template>
+      <template is="dom-if" if=[[team.settings.requires]]>
+        <playing-view-conditions data="[[team.settings.requires]]"></playing-view-conditions>
+      </template>
+    </div>
+
+    <div role="widget">
+      <label role="widget">[[i18n('play.team.restrictions')]]</label>
       <div class="table">
         <div class="table-header">
-          <div class="flex">[[i18n('play.constraints.minimum')]]</div>
-          <div class="flex">[[i18n('play.constraints.maximum')]]</div>
-          <div class="flex">[[i18n('play.constraints.default')]]</div>
+          <div class="flex">[[i18n('play.team.restriction.max-players')]]</div>
+          <div class="flex">[[i18n('play.team.restriction.max-teams')]]</div>
+          <div class="flex">[[i18n('play.team.restriction.player-teams')]]</div>
         </div>
         <div class="table-rows">
           <div class="table-row">
-            <div class="flex">[[team.constraints.minimum]]</div>
-            <div class="flex">[[team.constraints.maximum]]</div>
-            <div class="flex">[[team.constraints.default]]</div>
+            <div class="flex">[[team.settings.maxPlayers]]</div>
+            <div class="flex">[[team.settings.maxTeams]]</div>
+            <div class="flex">[[team.settings.playerTeams]]</div>
           </div>
         </div>
       </div>
@@ -70,6 +143,10 @@ Example:
             value: {}
           }
         }
+      }
+
+      toggleIcon(checked) {
+        return checked? 'playing:tick' : 'playing:cross';
       }
     }
 
