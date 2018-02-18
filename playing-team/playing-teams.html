@@ -44,20 +44,6 @@ An element for managing teams in Playing game services.
       .main {
         position: relative;
       }
-
-      #createButton {
-        position: absolute;
-        right: 0;
-        padding: 0;
-        top: 15px;
-        width: 130px;
-        height: 48px;
-        margin-bottom: 16px;
-      }
-
-      paper-button iron-icon {
-        padding-right: 8px;
-      }
     </style>
 
     <mostly-connection user="{{_currentUser}}"></mostly-connection>
@@ -73,7 +59,7 @@ An element for managing teams in Playing game services.
             <div class="horizontal layout center">
               <template is="dom-if" if="[[_canCreateTeam(readonly, _currentUser)]]">
                 <div class="flex">
-                  <paper-button noink id="createButton" class="primary horizontal layout center" on-tap="_createTeam">
+                  <paper-button noink class="primary createButton" on-tap="_createTeam">
                     <iron-icon icon="mostly:add"></iron-icon> [[i18n('play.team.new')]]
                   </paper-button>
                 </div>
