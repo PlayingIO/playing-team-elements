@@ -25,39 +25,13 @@
 -->
 <dom-module id="playing-create-team">
   <template>
-    <style include="mostly-styles">
+    <style include="mostly-styles playing-styles">
       :host {
         display: block;
       }
 
-      .header {
-        @apply --layout-start;
-        padding: 0px;
-      }
-
-      .backButton {
-        color: var(--mostly-button-primary, #00adff);
-      }
-
-      .name {
-        margin: 10px 0 5px 5px;
-      }
-
-      .subname {
-        font-weight: normal;
-        margin: 0 0 0 5px;
-      }
-
-      .icon {
-        margin-top: 8px;
-      }
-
       #form {
         margin: 1em;
-      }
-
-      .form-buttons {
-        color: var(--mostly-button-primary, #00adff);
       }
 
       #errors {
@@ -86,8 +60,7 @@
         
           <mostly-input name="name" label="[[i18n('play.team.field.name')]]"
                   value="{{team.name}}" minlength="3" maxlength="20"
-                  auto-validate required always-float-label>
-          </mostly-input>
+                  auto-validate required always-float-label></mostly-input>
 
           <mostly-layout id="viewerLayout" href="[[layoutHref('edit')]]"
                     model="[[layoutModel(team, new)]]"></mostly-layout>
