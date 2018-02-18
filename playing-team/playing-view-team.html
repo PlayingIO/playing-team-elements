@@ -111,16 +111,22 @@ Example:
     <div role="widget">
       <label role="widget">[[i18n('play.team.restrictions')]]</label>
       <div class="table">
-        <div class="table-header">
-          <div class="flex">[[i18n('play.team.restrictions.maxPlayers')]]</div>
-          <div class="flex">[[i18n('play.team.restrictions.maxTeams')]]</div>
-          <div class="flex">[[i18n('play.team.restrictions.playerTeams')]]</div>
+        <div class="table-rows">
+          <div class="table-row">
+            <div class="flex-1">[[i18n('play.team.restrictions.maxPlayers')]]</div>
+            <div class="flex-2">[[team.settings.maxPlayers]]</div>
+          </div>
         </div>
         <div class="table-rows">
           <div class="table-row">
-            <div class="flex">[[team.settings.maxPlayers]]</div>
-            <div class="flex">[[team.settings.maxTeams]]</div>
-            <div class="flex">[[team.settings.playerTeams]]</div>
+            <div class="flex-1">[[i18n('play.team.restrictions.maxTeams')]]</div>
+            <div class="flex-2">[[team.settings.maxTeams]]</div>
+          </div>
+        </div>
+        <div class="table-rows">
+          <div class="table-row">
+            <div class="flex-1">[[i18n('play.team.restrictions.playerTeams')]]</div>
+            <div class="flex-2">[[team.settings.playerTeams]]</div>
           </div>
         </div>
       </div>
