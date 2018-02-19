@@ -41,9 +41,8 @@
       }
     </style>
 
-    <mostly-resource id="teamSearch" auto
-            path="teams"
-            response="{{teams}}"></mostly-resource>
+    <mostly-resource id="searchRequest" path="teams"
+            response-data="{{teams}}" auto></mostly-resource>
 
     <mostly-card class="search">
       <mostly-input noink autofocus="true" value="{{searchTerm}}" type="search"
@@ -63,20 +62,20 @@
           <div class="flex-4">[[i18n('play.team.field.description')]]</div>
         </div>
         <div class="table-rows">
-          <template is="dom-repeat" items="[[teams.data]]" as="item">
+          <template is="dom-repeat" items="[[teams]]" as="item">
             <div class="table-row" on-tap="_manageTeam">
               <div class="flex-2">[[item.name]]</div>
               <div class="flex-4">[[item.description]]</div>
             </div>
           </template>
-          <template is="dom-if" if=[[!teams.data.length]]>
+          <template is="dom-if" if=[[!teams.length]]>
             <div class="table-row">
               <div class="empty-result">[[i18n('play.team.search.empty')]]</div>
             </div>
           </template>
         </div>
       </div>
-      <mostly-pagination-controls page="{{teamsCurrentPage}}" number-of-pages="[[teams.numberOfPages]]"></mostly-pagination-controls>
+      <mostly-pagination-controls page="{{currentPage}}" number-of-pages="[[teams.numberOfPages]]"></mostly-pagination-controls>
     </mostly-card>
 
   </template>
@@ -98,7 +97,7 @@
 
           teams: Object,
 
-          teamsCurrentPage: {
+          currentPage: {
             type: 'Number',
             value: 1
           },
@@ -112,24 +111,24 @@
 
       static get observers() {
         return [
-          '_searchTeams(teamsCurrentPage)'
+          '_searchTeams(currentPage)'
         ];
       }
 
       _searchTermChanged() {
-        this.teamsCurrentPage = 1;
+        this.currentPage = 1;
         this.currentPageSize = 10;
         this._searchTeams();
       }
 
       _searchTeams() {
         var params = {
-          '$skip': (this.teamsCurrentPage - 1) * this.currentPageSize
+          '$skip': (this.currentPage - 1) * this.currentPageSize
         };
         if (this.searchTerm) {
           params['name[$like]'] = this.searchTerm;
         }
-        this.$.teamSearch.params = params;
+        this.$.searchRequest.params = params;
       }
 
       _manageTeam(e) {
