@@ -75,7 +75,7 @@ An element for managing teams in Playing game services.
 
           <section name="manage-team">
             <playing-manage-team id="teamManager"
-                    team="[[selectedTeam.id]]"
+                    team="[[selectedTeam]]"
                     readonly$="[[readonly]]"></playing-manage-team>
           </section>
         </iron-pages>
@@ -91,6 +91,11 @@ An element for managing teams in Playing game services.
 
       static get properties() {
         return {
+          visible: {
+            type: Boolean,
+            observer: '_visibleChanged'
+          },
+
           /**
            * The team manage page to be displayed.
            */
@@ -98,6 +103,19 @@ An element for managing teams in Playing game services.
             type: String,
             value: 'search',
             notify: true
+          },
+
+          entity: {
+            type: Object,
+            value: {},
+            observer: '_entityChanged'
+          },
+
+          /**
+           * Selected team id.
+           */
+          selectedTeam: {
+            type: String
           },
 
           /**
@@ -122,6 +140,27 @@ An element for managing teams in Playing game services.
         this.addEventListener('manageTeam', this._manageTeam);
       }
 
+      _entityChanged() {
+        if (!this.visible) return;
+        if (this.entity && this.entity.id && this.entity.type) {
+          if (this.entity.type === 'team') {
+            this.selectedTeam = null;
+            this.selectedTeam = this.entity.id;
+            this.page = 'manage-team';
+          }
+        } else {
+          this.$$('playing-team-search')._searchTermChanged();
+        }
+      }
+
+      _visibleChanged() {
+        if (this.visible) {
+          this.async(() => {
+            this._entityChanged();
+          });
+        }
+      }
+
       /**
        * Go to the 'search' page.
        */
@@ -141,9 +180,8 @@ An element for managing teams in Playing game services.
       }
 
       _manageTeam(e) {
-        this.selectedTeam = null;
-        this.selectedTeam = e.detail.team;
-        this.page = 'manage-team';
+        var url = 'team-management/team/' + e.detail.team;
+        this.navigateTo('play', url);
       }
 
       _hasAdministrationPermissions(user) {
