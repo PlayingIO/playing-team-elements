@@ -143,7 +143,7 @@ An element for managing teams in Playing game services.
       _entityChanged() {
         if (!this.visible) return;
         if (this.entity && this.entity.id && this.entity.type) {
-          if (this.entity.type === 'team') {
+          if (this.entity.route === 'team-management') {
             this.selectedTeam = null;
             this.selectedTeam = this.entity.id;
             this.page = 'manage-team';
