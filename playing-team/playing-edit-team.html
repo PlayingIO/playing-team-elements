@@ -18,10 +18,6 @@ Example:
         display: block;
       }
 
-      *[role=widget] {
-        margin-bottom: 16px;
-      }
-
       mostly-collapse-button {
         margin: 16px 0px;
       }
@@ -47,7 +43,12 @@ Example:
 
     <!-- permissions -->
     <div class="layout vertical">
-      <label>[[i18n('play.team.permissions')]]</label>
+      <div class="layout horizontal center">
+        <h3 class="flex">[[i18n('play.team.permissions')]]</h3>
+        <paper-button noink id="addPermit" class="flex-end" on-tap="_addPermit">
+          <iron-icon icon="mostly:add"></iron-icon> [[i18n('play.team.permissions.create')]]
+        </paper-button>
+      </div>
 
       <div class="table-header">
         <div class="form-actions">&nbsp;</div>
@@ -109,9 +110,6 @@ Example:
 
     </div>
 
-    <div class="form-buttons">
-      <paper-button noink class="primary" on-tap="_addPermit">[[i18n('command.add')]]</paper-button>
-    </div>
 
     <mostly-collapse-button role="widget">
       <div slot="collapse-trigger">[[i18n('play.team.advanced')]]</div>

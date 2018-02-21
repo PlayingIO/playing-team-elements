@@ -17,14 +17,6 @@ Example:
       :host {
         display: block;
       }
-
-      *[role=widget] {
-        margin-bottom: 16px;
-      }
-
-      label {
-        @apply --mostly-label;
-      }
     </style>
     
     <div role="widget" hidden$="[[!team.description]]">
@@ -68,7 +60,7 @@ Example:
       </div>
 
       <template is="dom-repeat" items="{{team.permissions}}" as="permit">
-        <div class="form-row">
+        <div class="table-row">
           <div class="form-actions">[[index]]</div>
           <div class="flex-2">
             <label>[[permit.role]]</label>
@@ -92,7 +84,7 @@ Example:
       </template>
 
       <template is="dom-if" if=[[!team.permissions.length]]>
-        <div class="form-row">
+        <div class="table-row">
           <div class="empty-result">[[i18n('play.team.permissions.empty')]]</div>
         </div>
       </template>
