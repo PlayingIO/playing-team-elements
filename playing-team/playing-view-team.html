@@ -96,7 +96,7 @@ Example:
       [[i18n('play.team.creation.placeholder')]]
       <mostly-tag>[[p18n('play.team.creation', team.settings.creation)]]</mostly-tag>
       <template is="dom-if" if=[[team.settings.requires]]>
-        <playing-view-conditions data="[[team.settings.requires]]"></playing-view-conditions>
+        <playing-view-conditions requires="[[team.settings.requires]]"></playing-view-conditions>
       </template>
     </div>
 
