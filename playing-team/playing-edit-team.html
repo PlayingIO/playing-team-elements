@@ -36,9 +36,9 @@ Example:
     <!-- access -->
     <label role="widget">[[i18n('play.team.access')]]</label>
     <mostly-buttons-group role="widget" multi attr-for-selected="name" selected-values="{{team.access}}">
-      <paper-button name="public">[[i18n('play.team.access.public')]]</paper-button>
-      <paper-button name="protected">[[i18n('play.team.access.protected')]]</paper-button>
-      <paper-button name="private">[[i18n('play.team.access.private')]]</paper-button>
+      <paper-button name="PUBLIC">[[i18n('play.team.access.PUBLIC')]]</paper-button>
+      <paper-button name="PROTECTED">[[i18n('play.team.access.PROTECTED')]]</paper-button>
+      <paper-button name="PRIVATE">[[i18n('play.team.access.PRIVATE')]]</paper-button>
     </mostly-buttons-group>
 
     <!-- permissions -->
@@ -194,7 +194,7 @@ Example:
       }
 
       _publicChanged(e) {
-        if (e.detail.value === 'public') {
+        if (e.detail.value === 'PUBLIC') {
           this.set('team.settings.requires', this.team.settings.requires || [{ rule: null }]);
         } else {
           this.set('team.settings.requires', null);
