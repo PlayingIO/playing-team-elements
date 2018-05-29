@@ -1,7 +1,7 @@
-Playing Game Team Web Components
-================================
+Playing Game Teams Web Components
+=================================
 
-Game team management web components for playful applications.
+Game teams management web components for playful applications.
 
 # Usage
 
