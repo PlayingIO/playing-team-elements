@@ -1,6 +1,6 @@
 {
   "name": "playing-team-elements",
-  "description": "Game teams management web components for playful applications",
+  "description": "Game teams management web components for building playful applications",
   "version": "1.0.4",
   "license": "MIT",
   "devDependencies": {
