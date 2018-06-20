@@ -84,7 +84,7 @@
 
     afterFetch(team) {
       if (team.permissions && team.creatorRoles) {
-        team.permissions.forEach((perm) => {
+        team.permissions.forEach(perm => {
           if (perm.permits && team.creatorRoles.indexOf(perm.role) >= 0) {
             perm.permits.creatorRoles = true
           } else {

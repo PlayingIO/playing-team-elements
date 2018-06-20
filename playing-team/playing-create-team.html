@@ -117,7 +117,7 @@
 
       ready() {
         super.ready();
-        this.$.form.addEventListener('iron-form-presubmit', (event) => {
+        this.$.form.addEventListener('iron-form-presubmit', event => {
           event.preventDefault();
           this._create();
         });
@@ -149,19 +149,19 @@
        */
       _create() {
         this.beforeSubmit(this.team);
-        this._doCreate(this.team).then((team) => {
+        this._doCreate(this.team).then(team => {
           this.resetFields();
           if (!this._createAnother) {
             this._goHome();
           }
-        }).catch((error) => {
+        }).catch(error => {
           this.errors = error.message;
         });
       }
 
       _doCreate(team) {
         this.$.request.data = team;
-        return this.$.request.post().then((response) => {
+        return this.$.request.post().then(response => {
           this.fire('playing-team-created', response.data);
         })
       }

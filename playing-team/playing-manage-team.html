@@ -164,7 +164,7 @@ Example:
 
       ready() {
         super.ready();
-        this.$.editTeamForm.addEventListener('iron-form-presubmit', (event) => {
+        this.$.editTeamForm.addEventListener('iron-form-presubmit', event => {
           event.preventDefault();
           this._saveTeam();
         });
@@ -172,7 +172,7 @@ Example:
 
       _fetch() {
         if (typeof this.team === 'string') {
-          this.$.request.get().then((response) => {
+          this.$.request.get().then(response => {
             this.team = this.afterFetch(response.data);
             this.origTeam = this.fp.clone(this.team);
           });
@@ -205,7 +205,7 @@ Example:
         this.beforeSubmit(this.team);
         var editedTeam = JSON.parse(JSON.stringify(this.team));
         this.$.editRequest.data = editedTeam;
-        this.$.editRequest.patch().then((response) => {
+        this.$.editRequest.patch().then(response => {
           this.team = this.afterFetch(response.data);
           this.origTeam = this.fp.clone(this.team);
           this._toast(this.i18n('play.team.updated'));
@@ -218,7 +218,7 @@ Example:
 
       _deleteTeam() {
         this.$.deleteTeamDialog.toggle();
-        this.$.editRequest.remove().then((response) => {
+        this.$.editRequest.remove().then(response => {
           this.fire('playing-team-deleted', this.team);
           this._goHome();
         });
